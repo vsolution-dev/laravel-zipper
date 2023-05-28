@@ -24,6 +24,10 @@ And add the following line to the `aliases` array:
 'Zipper' => VSolutionDev\LaravelZipper\ZipperFacade::class,
 ```
 
+## Requirements
+
+This library requires PHP 7.4 or above. Make sure your server meets this requirement before installing.
+
 ## Usage
 
 To use this library, you can follow the example below:
