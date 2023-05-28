@@ -44,13 +44,13 @@ Qrcode::query()
         ]);
     });
 
-\Zipper::queue($files, 'qrcode.zip', 's3');
+Zipper::queue($files, 'qrcodes.zip', 's3')
+    ->allOnQueue('longtime')
+    ->chain([
+        (new SendMail())->attachFromStorageDisk('qrcodes.zip', 's3')
+    ]);
 ```
 
-In the above example, we create a collection of files to be added to the zip archive. Each file is represented by an array with path and name properties. The path should be the URL or file path of the file, and the name should be the desired name of the file inside the zip archive.
+In this example, after queuing the files for zipping using Zipper::queue(), we chain it with the SendMail job. The SendMail job is responsible for sending an email with the zip file attached. It uses the attachFromStorageDisk() method to attach the zip file from the specified storage disk ('s3' in this case).
 
-The \Zipper::queue() method is used to queue the files for zipping. The first argument is the collection of files, the second argument is the desired name of the zip archive, and the third argument is the storage type (in this case, 's3' represents Amazon S3).
-
-Feel free to customize and expand on this example based on your specific use case.
-
-For more information on how to use this library, please refer to the package documentation.
+Make sure you have the SendMail job defined with the appropriate logic to send the email. You may need to customize it according to your email sending implementation.
