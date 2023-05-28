@@ -3,9 +3,9 @@
 namespace VSolutionDev\LaravelZipper;
 
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
-class ZipperServiceProvider extends ServiceProvider
+class ServiceProvider extends BaseServiceProvider
 {
 
     public function register()

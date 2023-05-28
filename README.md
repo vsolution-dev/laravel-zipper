@@ -15,13 +15,13 @@ After the installation, you need to add the service provider and facade to your 
 Add the following line to the `providers` array:
 
 ```php
-VSolutionDev\LaravelZipper\ZipperServiceProvider::class,
+VSolutionDev\LaravelZipper\ServiceProvider::class,
 ```
 
 And add the following line to the `aliases` array:
 
 ```php
-'Zipper' => VSolutionDev\LaravelZipper\ZipperFacade::class,
+'Zipper' => VSolutionDev\LaravelZipper\Facade::class,
 ```
 
 ## Requirements
