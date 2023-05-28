@@ -12,6 +12,15 @@ abstract class Job implements ShouldQueue
 {
     use Dispatchable,
         InteractsWithQueue,
-        Queueable,
-        SerializesModels;
+        SerializesModels,
+        Queueable;
+
+    public function chain($chain)
+    {
+        collect($chain)->each(function ($job) {
+            $this->chained []= $this->serializeJob($job);
+        });
+
+        return $this;
+    }
 }
