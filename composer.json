@@ -1,0 +1,21 @@
+{
+    "name": "vsolution-dev/laravel-zipper",
+    "type": "library",
+    "require": {
+        "php": ">=7.4",
+        "laravel/framework": "^v8.83.27"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "VSolutionDev\\LaravelZipper\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "chamyeongdo",
+            "email": "chamyeongdo@icloud.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
