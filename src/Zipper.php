@@ -11,9 +11,17 @@ use VSolutionDev\LaravelZipper\Jobs\ReleaseZipJob;
 class Zipper
 {
 
-    protected $files = [];
+    /**
+     * @var \ZipArchive
+     */
     protected $archive;
 
+    /**
+     * @param $name
+     * @param $flags
+     * @return $this
+     * @throws \Exception
+     */
     public function create($name, $flags = \ZipArchive::CREATE | \ZipArchive::OVERWRITE)
     {
         return tap($this->open($name, $flags), function () {
@@ -21,6 +29,19 @@ class Zipper
         });
     }
 
+    private function throwIfInvalidArchive()
+    {
+        if ( ! $this->archive) {
+            throw new \Exception('`archive` is not defined. Please call `create` or `open` function first.');
+        }
+    }
+
+    /**
+     * @param $path
+     * @param $flags
+     * @return $this
+     * @throws \Exception
+     */
     public function open($path, $flags = null)
     {
         if ($this->archive) {
@@ -28,8 +49,8 @@ class Zipper
         }
 
         $archive = new \ZipArchive;
-        if ( ! $archive->open($path, $flags)) {
-            throw new \Exception('압축 생성을 실패했습니다.');
+        if ($archive->open($path, $flags) !== TRUE) {
+            throw new \Exception('Unable to read the archive file.');
         }
 
         $this->archive = $archive;
@@ -37,33 +58,49 @@ class Zipper
         return $this;
     }
 
+    /**
+     * @param string $path
+     * @return $this
+     * @throws \Exception
+     */
     public function extract($path)
     {
-        if ( ! $this->archive) {
-            throw new \Exception('잘못된 접근입니다.');
-        }
+        $this->throwIfInvalidArchive();
 
         $this->archive->extractTo($path);
 
         return $this;
     }
 
+    /**
+     * @param string $path
+     * @param string $name
+     * @return $this
+     * @throws \Exception
+     */
     public function add($path, $name)
     {
-        if ( ! $this->archive) {
-            throw new \Exception('잘못된 접근입니다.');
-        }
+        $this->throwIfInvalidArchive();
 
         $this->archive->addFromString($name, file_get_contents($path));
+
+        return $this;
     }
 
-    public function queue($files, $path, $disk)
+    /**
+     * @param $files
+     * @param $path
+     * @param $disk
+     * @param $chunk
+     * @return PendingDispatch
+     */
+    public function queue($files, $path, $disk, $chunk = 500)
     {
         $jobs = collect([]);
 
         $temporary = new RemoteTemporaryFile($disk);
 
-        collect($files)->chunk(500)->each(function ($chunks) use ($temporary, $jobs) {
+        collect($files)->chunk($chunk)->each(function ($chunks) use ($temporary, $jobs) {
             $jobs->push(new AppendFileJob($temporary, $chunks));
         });
 
@@ -74,11 +111,13 @@ class Zipper
         );
     }
 
+    /**
+     * @return $this
+     * @throws \Exception
+     */
     public function close()
     {
-        if ( ! $this->archive) {
-            throw new \Exception('잘못된 접근입니다.');
-        }
+        $this->throwIfInvalidArchive();
 
         $this->archive->close();
         $this->archive = null;
