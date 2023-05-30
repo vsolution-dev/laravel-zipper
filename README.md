@@ -21,7 +21,7 @@ VSolutionDev\LaravelZipper\ServiceProvider::class,
 And add the following line to the `aliases` array:
 
 ```php
-'Zipper' => VSolutionDev\LaravelZipper\Facade::class,
+'Zipper' => VSolutionDev\LaravelZipper\Facades\Zipper::class,
 ```
 
 ## Requirements

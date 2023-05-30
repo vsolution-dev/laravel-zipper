@@ -4,7 +4,7 @@ namespace VSolutionDev\LaravelZipper;
 
 use Illuminate\Support\Facades\Facade as BaseFacade;
 
-class Facade extends BaseFacade
+class Zipper extends BaseFacade
 {
 
     protected static function getFacadeAccessor()
